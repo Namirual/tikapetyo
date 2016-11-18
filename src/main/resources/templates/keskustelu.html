@@ -1,0 +1,104 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${keskusteluotsikko.otsikko}">Keskustelu</title>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+
+            <h2><a href="/">Foorumi</a> -- <a href="linkki" th:href="@{~/alue/{id}(id=${alueotsikko.osoite})}"><span th:text="${alueotsikko.otsikko}">Viesti</span></a>
+                -- <span th:text="${keskusteluotsikko.otsikko}">Viesti</span></h2>
+
+            <div th:if="${kayttaja}">Nimimerkki: <a href="linkki" th:href="@{~/kayttaja/{id}(id=${kayttaja.id})}">
+                    <span th:text="${kayttaja.nimi}">Kayttajan nimi</span></a> 
+                <form method="POST" action="/">
+                    <input type="hidden" name="poistacookie" value="kylla"/>
+                    <input type="submit" value="Kirjaudu ulos"/>
+                </form>
+            </div>
+            <span th:unless="${kayttaja}">Et ole kirjautunut sisään.</span>
+
+
+            <div class="row">
+                <div class="col-sm-1"><h4>Viestin numero</h4></div>
+                <div class="col-sm-5"><h4>Viesti</h4></div>
+                <div class="col-sm-2"><h4>Kirjoittaja</h4></div>
+                <div class="col-sm-2"><h4>Kirjoitusaika</h4></div>
+                <div class="col-sm-2" th:if="${moderaattori}"><h4>Poista</h4></div>
+            </div>
+
+            <div class="row" th:each="viesti : ${viestit}">
+                <div class="col-sm-1" th:text="${viesti.jarjestys}">Viestin järjestys</div>
+                <div class="col-sm-5" th:text="${viesti.viesti}">Viesti</div>
+                <div class="col-sm-2" th:text="${viesti.luoja}">Luoja</div>
+                <div class="col-sm-2" th:text="${viesti.luontiaika}">Viimeisin viesti</div>
+                <div class="col-sm-1" th:if="${moderaattori}"> 
+                    <form method="POST" th:action="@{~/delete/viesti/{osoite}(osoite=${viesti.linkki})}">
+                        <input type="submit" value="Poista"/>
+                    </form></div>
+                <div class="col-sm-1" th:if="${moderaattori}"> 
+                    <form method="POST" th:action="@{~/bannaa/kayttaja/{osoite}/{osoite2}(osoite=${viesti.linkki}, osoite2=${viesti.luojaID})}">
+                        <input type="submit" value="BANHAMMER"/>
+                    </form></div>
+            </div>
+
+            <br/>
+
+
+            <div th:if="${kayttaja and kayttaja.kayttajataso > 0}">
+                <h4>Uusi viesti</h4>
+
+                <form method="POST" th:action="@{~/{osoite}(osoite=${keskustelu})}">
+                    <div class="form-group">
+                        <input type="hidden" name="sivu" th:value="${sivu}"/>
+                        <!--<input type="text" name="viesti"/> -->
+                        <textarea class="form-control" rows="5" name="viesti" style="max-width: 70%"></textarea>
+                        <input type="submit" class="btn-primary" value="Lähetä viesti"/>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <form style="form {display: inline;}" th:if="${taakse}" method="GET" th:action="@{~/{osoite}(osoite=${keskustelu})}">
+                    <input type="hidden" name="sivu" th:value="${edellinen}"/>
+                    <input type="submit" value="Taaksepäin" />
+                </form>
+
+                <form style="form {display: inline;}" th:if="${eteen}" method="GET" th:action="@{~/{osoite}(osoite=${keskustelu})}">
+                    <input type="hidden" name="sivu" th:value="${seuraava}"/>
+                    <input type="submit" value="Eteenpäin" />
+                </form>
+            </div>
+
+
+
+
+            <div th:if="${moderaattori}">
+                <h4>Poista keskustelu</h4>
+
+                <form method="POST" th:action="@{~/delete/{osoite}(osoite=${keskustelu})}">
+
+                    <input type="submit" value="Poista"/>
+                </form>
+	    </div>
+
+                <h4>Valtaa alue</h4>
+
+                <form method="POST" th:action="@{~/valtaa/{osoite}(osoite=${keskustelu})}">
+                    <input type="submit" value="Add!"/>
+                </form>
+            
+            <br/>
+            <br/>
+
+            <button type="button" onclick="location.href = '/'">Palaa etusivulle</button>
+
+        </div>
+
+    </body>
+</html>

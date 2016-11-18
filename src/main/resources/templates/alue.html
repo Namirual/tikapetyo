@@ -1,0 +1,72 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Foorumi</title>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+
+            <h2><a href="/">Foorumi</a> -- <span th:text="${otsikko.otsikko}">Viesti</span></h2>
+
+            <div th:if="${kayttaja}">Nimimerkki: <a href="linkki" th:href="@{~/kayttaja/{id}(id=${kayttaja.id})}">
+                    <span th:text="${kayttaja.nimi}">Kayttajan nimi</span></a> 
+                <form method="POST" action="/">
+                    <input type="hidden" name="poistacookie" value="kylla"/>
+                    <input type="submit" value="Kirjaudu ulos"/>
+                </form>
+            </div>
+            <span th:unless="${kayttaja}">Et ole kirjautunut sisään.</span>
+
+            <div class="row">
+                <div class="col-sm-6"><h4>Keskustelunaloitus</h4></div>
+                <div class="col-sm-2"><h4>Viestien määrä</h4></div>
+                <div class="col-sm-2"><h4>Viimeisin viesti</h4></div>
+            </div>
+
+            <div class="row" th:each="otsake : ${otsakkeet}">
+                <div class="col-sm-6" style="background-color: lavender">
+                    <a href="linkki" th:href="@{~/keskustelu/{id}(id=${otsake.osoite})}"><span th:text="${otsake.otsikko}">Keskustelun nimi</span></a>
+                </div>
+                <div class="col-sm-2" th:text="${otsake.viestit}">Viestejä</div>
+                <div class="col-sm-2" th:text="${otsake.aika}">Viimeisin</div>
+            </div>
+
+
+            <div>
+                <form style="form {display: inline;}" th:if="${taakse}" method="GET" th:action="@{~/{osoite}(osoite=${alue})}">
+                    <input type="hidden" name="sivu" th:value="${edellinen}"/>
+                    <input type="submit" value="Taaksepäin" />
+                </form>
+
+                <form style="form {display: inline;}" th:if="${eteen}" method="GET" th:action="@{~/{osoite}(osoite=${alue})}">
+                    <input type="hidden" name="sivu" th:value="${seuraava}"/>
+                    <input type="submit" value="Eteenpäin" />
+                </form>
+            </div>
+
+            <div th:if="${kayttaja and kayttaja.kayttajataso > 0}">
+                <h4>Uusi keskustelu</h4>
+                <form method="POST" th:action="@{~/{osoite}(osoite=${alue})}">
+                    <input type="text" name="name"/>
+                    <input type="submit" value="Add!"/>
+                </form>
+            </div>
+            <div th:if="${moderaattori}">
+                <form method="POST" th:action="@{~/delete/{osoite}(osoite=${alue})}">
+                    <input type="submit" value="Poista Alue"/>
+                </form>
+            </div>
+
+            <br/>
+            <br/>
+            <button type="button" onclick="location.href = '/'">Palaa etusivulle</button>
+            
+        </div>
+
+    </body>
+</html>

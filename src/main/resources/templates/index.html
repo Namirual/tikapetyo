@@ -1,0 +1,94 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Foorumi</title>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <h2>Foorumi</h2>
+
+            <div th:if="${kayttaja}">Nimimerkki: <a href="linkki" th:href="@{~/kayttaja/{id}(id=${kayttaja.id})}">
+                    <span th:text="${kayttaja.nimi}">Kayttajan nimi</span></a> 
+                <form method="POST" action="/">
+                    <input type="hidden" name="poistacookie" value="kylla"/>
+                    <input type="submit" value="Kirjaudu ulos"/>
+                </form>
+            </div>
+            <span th:unless="${kayttaja}">Et ole kirjautunut sisään.</span>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-sm-6"><h4>Alueen nimi</h4></div>
+                <div class="col-sm-2"><h4>Viestien määrä</h4></div>
+                <div class="col-sm-2"><h4>Viimeisin viesti</h4></div>
+            </div>
+
+            <div class="row" th:each="otsake : ${otsakkeet}">
+                <div class="col-sm-6" style="background-color: lavender">
+                    <a href="linkki" th:href="@{~/alue/{id}(id=${otsake.osoite})}"><span th:text="${otsake.otsikko}">Koirat</span></a>
+                </div>
+                <div class="col-sm-2" th:text="${otsake.viestit}">112</div>
+                <div class="col-sm-2" th:text="${otsake.aika}">20.10.2016 20:45</div>
+            </div>
+
+
+            <div>
+                <form style="form {display: inline;}" th:if="${taakse}" method="GET" th:action="@{~/}">
+                    <input type="hidden" name="sivu" th:value="${edellinen}"/>
+                    <input type="submit" value="Taaksepäin" />
+                </form>
+
+                <form style="form {display: inline;}" th:if="${eteen}" method="GET" th:action="@{~/}">
+                    <input type="hidden" name="sivu" th:value="${seuraava}"/>
+                    <input type="submit" value="Eteenpäin" />
+                </form>
+            </div>
+
+            <br/>
+
+
+            <h4>Kirjaudu sisään</h4>
+
+            <form method="POST" th:action="@{~/}">
+                Tunnus<br/>
+                <input type="text" name="login"/>
+                <br/>Salasana:<br/>
+                <input type="text" name="password"/>
+                <input type="submit" value="Kirjaudu sisään"/>
+            </form>
+            <br/>
+            <a href="/luokayttaja/">Luo uusi käyttäjä:</a>
+	    <a href="/kayttajat/">Foorumin nykyiset käyttäjät</a>
+
+            <br/>
+            <br/>
+
+            <div th:if="${kayttaja and kayttaja.kayttajataso==2}">
+                <h4><b>ALL HAIL THE MIGHTY MODERATOR</b></h4>
+                <h4>BY THE POWER OF GOD, Luo uusi alue</h4>
+
+                <form method="POST" th:action="@{~/}">
+                    <input type="text" name="name"/>
+                    <input type="submit" value="Luo!"/>
+                </form>
+            </div>
+
+            <br/>
+            <br/>
+
+            <h4> Juttuja:</h4>
+            <pre>Master käyttäjä (pystyy poistelemaan viestejä): master/master</pre>
+            <pre>Bannattu käyttäjä (ei voi tehä mitään): bannattu/bannattu</pre>
+
+        </div>
+
+
+
+    </body>
+</html>

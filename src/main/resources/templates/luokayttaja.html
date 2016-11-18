@@ -1,0 +1,44 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Luo uusi kayttaja</title>
+        <!--Lisätään Bootstrapin tarvitsemat rimpsut, ja mistä tyylit ladatan-->
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <h2><a href="/">Foorumi</a> -- Uuden käyttäjän luonti</h2>
+
+            <div th:if="${kayt_id}">Nimimerkki: <a href="linkki" th:href="@{~/kayttaja/{id}(id=${kayt_id.id})}">
+                    <span th:text="${kayt_id.nimi}">Kayttajan nimi</span></a> 
+                <form method="POST" action="/">
+                    <input type="hidden" name="poistacookie" value="kylla"/>
+                    <input type="submit" value="Kirjaudu ulos"/>
+                </form>
+            </div>
+            <span th:unless="${kayt_id}">Et ole kirjautunut sisään.</span>
+
+            <h3>Luo käyttäjä</h3>
+
+            <form method="POST" th:action="@{~/luokayttaja}">
+                Käyttäjätunnus:<br/>
+                <input type="text" name="tunnus"/>
+                <br/>Salasana:<br/>
+                <input type="text" name="salasana"/>
+                <br/>Sähköposti:<br/>
+                <input type="text" name="email"/>
+                <br/>Nimimerkki:<br/>
+                <input type="text" name="nimi"/>
+                <input type="submit" value="Luo kayttaja!"/>
+            </form>
+
+            <br/>
+            <br/>
+            <button type="button" onclick="location.href = '/'">Palaa etusivulle</button>
+        </div>
+    </body>
+</html>
